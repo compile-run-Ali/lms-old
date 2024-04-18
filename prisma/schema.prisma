@@ -1,0 +1,276 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  p_number String @id
+
+  name            String
+  password        String
+  phone_number    String
+  cgpa            Float
+  email           String
+  DOB             DateTime
+  eval_code       String?
+  rank            String?
+  profile_picture String?
+
+  courses            SRC[]
+  subjective_answers SSA[]
+  objective_answers  SOA[]
+  attempts           SPA[]
+  SIA                SIA[]
+}
+
+model SRC {
+  src_id String @id @default(uuid())
+
+  student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
+  p_number String
+
+  course      Course @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
+  course_code String
+}
+
+model Ip {
+  ip_address String  @unique @db.VarChar(255)
+  rank       String?
+  role       String
+}
+
+model Course {
+  course_code String @id @unique
+
+  course_name  String
+  credit_hours Int
+  max_students Int?
+
+  students SRC[]
+  faculty  FTC[]
+
+  paper       Paper[]
+  CoursePaper CoursePaper[]
+}
+
+model Faculty {
+  faculty_id String @id @default(uuid())
+
+  pa_number       String? @unique
+  name            String
+  password        String
+  level           Int
+  position        String?
+  rank            String?
+  email           String  @unique
+  phone_number    String
+  profile_picture String?
+
+  comments PaperComment[]
+
+  courses       FTC[]
+  paperapproval PaperApproval[]
+  notifications Notification[]
+}
+
+model FTC {
+  ftc_id String @id @default(uuid())
+
+  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
+  faculty_id String
+
+  course      Course @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
+  course_code String
+}
+
+model PaperApproval {
+  paperapproval_id String @id @default(uuid())
+
+  level    Int
+  approved Boolean @default(false)
+
+  paper_id String @unique
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+
+  faculty_id String
+  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
+}
+
+model Paper {
+  paper_id         String         @id @default(uuid())
+  paper_name       String
+  course           Course?        @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
+  course_code      String?
+  paper_type       String
+  examofficer      PaperApproval?
+  freeflow         Boolean?
+  review           Boolean        @default(false)
+  date             String
+  duration         Int
+  objDuration      Int?
+  weightage        Int?
+  status           String         @default("Draft")
+  total_marks      Float          @default(0)
+  objective_marks  Int            @default(0)
+  subjective_marks Float          @default(0)
+  language         String         @default("English")
+
+  subjective_questions SubjectiveQuestion[]
+  objective_questions  ObjectiveQuestion[]
+  ie_questions         IeQuestion[]
+
+  PaperComment PaperComment[]
+  attempts     SPA[]
+  SIA          SIA[]
+  CoursePaper  CoursePaper[]
+}
+
+model CoursePaper {
+  id          Int    @id @default(autoincrement())
+  course      Course @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
+  course_code String
+  paper       Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id    String
+}
+
+
+model LinkedPaper {
+  paperIdA String @id
+  paperIdB String
+}
+
+model SubjectiveQuestion {
+  sq_id String @id @default(uuid())
+
+  questionnumber Int
+  question       String  @db.VarChar(5000)
+  answer         String? @db.VarChar(5000)
+  long_question  Boolean @default(true)
+  marks          Float
+
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id String
+
+  child_question SubjectiveQuestion[] @relation("QuestionByParts")
+
+  parent_sq_id    String?
+  parent_question SubjectiveQuestion? @relation("QuestionByParts", fields: [parent_sq_id], references: [sq_id], onDelete: Cascade)
+
+  student_attempts SSA[]
+}
+
+//Student Subjective Question Attempt
+model SSA {
+  ssa_id              String             @id @default(uuid())
+  sq_id               String
+  subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id], onDelete: Cascade)
+  p_number            String
+  student             Student            @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
+  answer              String             @db.VarChar(10000)
+  marksobtained       Float              @default(0)
+}
+
+model ObjectiveQuestion {
+  oq_id String @id @default(uuid())
+
+  question       String @db.VarChar(10000)
+  answers        String @db.VarChar(1000)
+  correct_answer String
+  marks          Int
+  timeAllowed    Int    @default(0)
+
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id String
+
+  student_attempst SOA[]
+}
+
+model IeQuestion {
+  ie_id String @id @default(uuid())
+
+  fileName     String
+  fileUrl      String
+  fileNameWord String?
+  fileUrlWord  String?
+  total_marks  Float   @default(0)
+
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id String
+}
+
+//Student Objective Question Attempt
+model SOA {
+  soa_id String @id @default(uuid())
+
+  oq_id              String
+  objective_question ObjectiveQuestion @relation(fields: [oq_id], references: [oq_id], onDelete: Cascade)
+
+  p_number String
+  student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
+
+  answer        String
+  is_attempted  Boolean @default(false)
+  marksobtained Float
+}
+
+model PaperComment {
+  pc_id          String   @id @default(uuid())
+  paper          Paper    @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id       String
+  faculty        Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
+  faculty_id     String
+  comment        String
+  user_generated Boolean  @default(false)
+  time           DateTime @default(now())
+}
+
+model Notification {
+  notification_id String @id @default(uuid())
+
+  notification String
+
+  exam_id    String   @default("")
+  time       DateTime @default(now())
+  read       Boolean  @default(false)
+  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
+  faculty_id String
+}
+
+model SPA {
+  spaId           String  @id @default(uuid())
+  studentId       String
+  paperId         String
+  status          String? @default("Not Attempted")
+  timeStarted     String?
+  timeCompleted   String?
+  currentQuestion Int     @default(1)
+  obtainedMarks   Float   @default(0)
+  studentComment  String  @default("") @db.VarChar(1000)
+  teacherComment  String  @default("") @db.VarChar(10000)
+  objectiveSolved Boolean @default(false)
+
+  student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
+  paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
+}
+
+model SIA {
+  siaId         String  @id @default(uuid())
+  studentId     String
+  paperId       String
+  status        String? @default("Not Attempted")
+  timeStarted   String?
+  timeCompleted String?
+  obtainedMarks Float   @default(0)
+  fileName      String
+  fileUrl       String
+
+  student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
+  paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
+}
