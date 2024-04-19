@@ -22,7 +22,8 @@ export default async function handler(req, res) {
 
       const file = files.files;
       const oldPath = file.filepath;
-      const fileName = file.originalFilename.replace(/,/g, ""); // Remove commas from the filename
+      // let fileName = file.originalFilename.replace(/,/g, ""); // Remove commas from the filename
+      let fileName = `${studentId}_${file.originalFilename.replace(/,/g, "")}`
       const newPath = `./public/attempts/${fileName.replace(/,/g, "")}`; // Remove commas from the path
       mv(oldPath, newPath, function (err) {
         if (err) {

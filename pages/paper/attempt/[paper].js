@@ -179,6 +179,10 @@ export default function Paper() {
     localStorage.removeItem(`attempted_questions_${paper}`);
   };
   console.log(paperDetails?.subjective_questions, "abcd");
+  
+  
+  
+  
   const updateStatus = () => {
     //update spa status to Attempted
     const isObjective = paperDetails?.subjective_questions?.length === 0;

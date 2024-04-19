@@ -269,31 +269,65 @@ const StudentsTable = ({
   //     </div>
   //   );
   // }
+  
+  
+  // const handleDownload = async () => {
+  //   // look thru all students
+  //   students.forEach(async (student) => {
+  //     if (student.student.status === "Not Attempted") return;
+  //     const response = await axios.get(`/api/paper/marking/download_IE_attempt`, {
+  //       params: {
+  //         paperId: exam.paper_id,
+  //         studentId: student.student.p_number,
+  //       },
+  //       responseType: "blob",
+  //     });
+
+  //     const href = window.URL.createObjectURL(response.data);
+  //     const link = document.createElement("a");
+
+  //     // Include student ID in the file name
+  //     const fileNameWithStudentId =
+  //       response.headers["content-disposition"].split("filename=")[1];
+  //     link.href = href;
+  //     link.download = student.student.p_number + "_" + fileNameWithStudentId; // Add student ID to the filename
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     window.URL.revokeObjectURL(href);
+  //   });
+  // };
+
   const handleDownload = async () => {
-    // look thru all students
-    students.forEach(async (student) => {
-      if (student.student.status === "Not Attempted") return;
-      const response = await axios.get(`/api/paper/marking/download_IE_attempt`, {
+    let students_ids_attempted = students
+    .filter((student) => {return student.student.status !== "Not Attempted"})
+    .map((student) => student.student.p_number)
+    console.log("students_ids_attempted: ", students_ids_attempted)
+
+    // const res = await axios.get(`/api/paper/marking/download_ALL_IEs`,
+    try{
+      const res = await axios.get(`/api/paper/marking/download_IE_attempt`,
+      {
         params: {
           paperId: exam.paper_id,
-          studentId: student.student.p_number,
+          studentIds: students_ids_attempted.join(",")
         },
-        responseType: "blob",
-      });
+        responseType: "blob"
+      })
 
-      const href = window.URL.createObjectURL(response.data);
+      if (res === "No file uploaded") return
+
+      const href = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
-
-      // Include student ID in the file name
-      const fileNameWithStudentId =
-        response.headers["content-disposition"].split("filename=")[1];
       link.href = href;
-      link.download = student.student.p_number + "_" + fileNameWithStudentId; // Add student ID to the filename
+      const zip_name = `${exam.paper_name}_IE_Exams.zip`
+      link.setAttribute('download', zip_name);
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(href);
-    });
+    }
+    catch(error){
+      console.log("error in handleDownload: ", error)
+    }
   };
 
   return (
