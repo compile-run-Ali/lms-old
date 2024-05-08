@@ -49,7 +49,7 @@ const configuration = {
         }
 
         console.log(req.body.ip,"ipppp")
-        if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com") {
+        if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com" && req.body.username !== "omer@farooq.com" && req.body.username !== "o@farooq.com") {
           console.log(ip,"User Ip")
           console.log("Ip Address Does not match")
           throw new Error("IP address does not match");
