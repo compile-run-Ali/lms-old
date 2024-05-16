@@ -709,9 +709,9 @@ const SubjectiveExam = ({
                       <td className="px-6">{index+1}</td>
                       <td className="px-6"></td>
                       <td className="px-4 py-2">{subjective.question}</td>
-                      {subjective.answer.length > 10 
-                      ? <td className="px-4 py-2">{subjective.answer.substring(0, 10) + " ....."}</td>
-                      : <td className="px-4 py-2">{subjective.answer}</td>}
+                      {subjective?.answer?.length > 10 
+                      ? <td className="px-4 py-2">{subjective?.answer?.substring(0, 10) + " ....."}</td>
+                      : <td className="px-4 py-2">{subjective?.answer}</td>}
                       
                       <td className="px-4 py-2">
                         {subjective.parent_sq_id?.question}
