@@ -20,9 +20,9 @@ const handler = async (req, res) => {
     const papers =  JSON.parse(JSON.stringify(linkedPapers));
     console.log(papers)
     if (papers[0].paperIdA === paperId) {
-      res.status(200).json({ paperId: papers[0].paperIdB });
+      res.status(200).json({ paperId: papers[0]?.paperIdB });
     } else {
-      res.status(200).json({ paperId: papers[0].paperIdA });
+      res.status(200).json({ paperId: papers[0]?.paperIdA });
     }
   } catch (err) {
     console.error(err);

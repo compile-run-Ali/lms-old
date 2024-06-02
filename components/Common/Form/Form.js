@@ -204,6 +204,25 @@ export default function Form({
               error: "Error in Linking Paper",
             });
           }
+          // also update time and date of linked paper if changed
+          // api/faculty/paper_creation/edit_paper
+          try {
+            const res = await axios.post(
+              "/api/faculty/paper_creation/edit_paper",
+              {
+                paper_id: linkedId,
+                date: formatDate(dateOfExam, paperTime),
+                duration: paperDuration,
+                objDuration: objDuration,
+              }
+            );
+            console.log("updated linked paper", res.data);
+          } catch (err) {
+            console.log(err);
+            setLoading({
+              error: "Error in Updating Linked Paper",
+            });
+          }
         }
 
         setPaperId(res.data.paper_id);
@@ -271,7 +290,29 @@ export default function Form({
         });
       });
   };
-
+  async function getLinkedPaperId(examId) {
+    console.log("Sending id ", examId, "to get linked paper id");
+    try {
+      const res = await axios.get("/api/faculty/paper_creation/get_linked", {
+        params: {
+          paperId: examId,
+        },
+      });
+      console.log(res.data);
+      return res.data.paperId;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  useEffect(() => {
+    if (edit) {
+      getLinkedPaperId(examDetails.paper_id).then((res) => {
+        setLinkedId(res);
+      }
+      );
+    }
+  }, [edit]);
+  console.log("linkedId", linkedId);
   useEffect(() => {
     // When the component mounts or when router.query.course_code changes,
     // add it to the selectedCourses array if it's not already there

@@ -52,9 +52,9 @@ export default function NewTimer({ time, startTime, objTimeLeft }) {
 
         // set time formatted and padded
         setTimeLeft(
-            `${new_hours.toString().padStart(2, "0")}:${new_minutes
+            `${hours.toString().padStart(2, "0")}:${minutes
                 .toString()
-                .padStart(2, "0")}:${new_seconds.toString().padStart(2, "0")}`
+                .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
         );
 
         setObjectiveTimeLeft(
