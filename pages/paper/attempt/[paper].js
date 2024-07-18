@@ -268,7 +268,7 @@ export default function Paper() {
       handleSubmitObjective();
     }
 
-    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true") || paperDetails?.objective_questions?.length === 0) {
+    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0)) {
       setTimeout(() => {
         setAttemptTime(attemptTime - 1);
         var now = new Date();
