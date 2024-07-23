@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 const handler = async (req, res) => {
   try {
     const paperId = req.body.paper_id;
+    const selectedCourse = req.body.selectedCourse;
 
     // Step 1: Find CoursePaper records associated with the paper
     const coursePapers = await prisma.coursePaper.findMany({
@@ -12,13 +13,16 @@ const handler = async (req, res) => {
     });
 
     // Step 2: Extract course codes from the CoursePaper records
-    const courseCodes = coursePapers.map((coursePaper) => coursePaper.course_code);
+    let courseCodes = [];
+    if (!selectedCourse) {
+    courseCodes = coursePapers.map((coursePaper) => coursePaper.course_code);
+    }
 
     // Step 3: Find students enrolled in courses with the obtained course codes
     const students = await prisma.sRC.findMany({
       where: {
         course_code: {
-          in: courseCodes,
+          in : selectedCourse? [selectedCourse]: courseCodes,
         },
       },
       select: {

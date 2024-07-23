@@ -35,6 +35,7 @@ export default function Dashboard() {
       fetchExams();
     }
   }, [session, selectedCourse]);
+  
   useEffect(() => {
     if (session.status === "authenticated") {
       fetchExams();

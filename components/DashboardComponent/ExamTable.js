@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import { MdCheckCircle, MdEdit } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 
-const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
+const ExamTable = ({ exams_data, approve_row, isPrevious = false,selectedCourse }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
   const { data: session, status } = useSession();
@@ -150,7 +150,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   };
 
   const handleExamClick = (paper_id) => {
-    router.push(`/faculty/exam_details/${paper_id}`);
+    router.push(`/faculty/exam_details/${paper_id}?selectedCourse=${selectedCourse}`);
   };
   console.log(exams_data, "exams_data");
   if (!exams_data || (exams_data && exams_data.length === 0)) {

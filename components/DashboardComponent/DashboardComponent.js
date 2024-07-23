@@ -128,6 +128,7 @@ export default function DashboardComponent({
               exams_data={paperapproval.filter(
                 (paper) => paper.status === "Pending Approval"
               )}
+              selectedCourse={selectedCourse}
             />
           </div>
         )}
@@ -143,6 +144,8 @@ export default function DashboardComponent({
                     paper.status === "Pending Approval") ||
                   paper.status === "Draft"
               )}
+              selectedCourse={selectedCourse}
+
             />
           </div>
         )}
@@ -162,6 +165,8 @@ export default function DashboardComponent({
                       paper.status !== "unapproved") ||
                     (level > 2 && paper.status === "Approved")
                 )}
+                selectedCourse={selectedCourse}
+
               />
             </div>
           </div>

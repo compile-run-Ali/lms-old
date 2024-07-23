@@ -14,6 +14,7 @@ export default function Exam({
   objectiveQuestions,
   isEdit,
   setActive,
+  selectedCourse
 }) {
   const session = useSession();
   const router = useRouter();
@@ -789,7 +790,7 @@ export default function Exam({
             <button
               className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8 my-10"
               onClick={() => {
-                router.push("/faculty/mark_exam/" + exam.paper_id);
+                router.push(`/faculty/mark_exam/${exam.paper_id}?selectedCourse=${selectedCourse}`);
               }}
             >
               Evaluate

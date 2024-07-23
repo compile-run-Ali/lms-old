@@ -12,12 +12,13 @@ const MarkingPage = () => {
   const [exam, setExam] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const { exam_id } = router.query;
+  const { exam_id,selectedCourse } = router.query;
 
   const fetchStudents = async () => {
     // first fetch students
     const studentsPromise = axios.post("/api/paper/marking/get_students", {
       paper_id: router.query.exam_id,
+      selectedCourse: selectedCourse,
     });
     const promises = [studentsPromise];
     const [students] = await Promise.all(promises);
@@ -91,6 +92,7 @@ const MarkingPage = () => {
             students_data={studentsData}
             exam_id={exam_id}
             exam={exam}
+            selectedCourse={selectedCourse}
           />
         )}
       </DashboardLayout>

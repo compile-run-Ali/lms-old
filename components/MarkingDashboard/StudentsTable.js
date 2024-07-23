@@ -17,6 +17,7 @@ const StudentsTable = ({
   exam_id,
   exam: examDetails,
   isPrinter = false,
+  selectedCourse
 }) => {
   const [students, setStudents] = useState([]);
 
@@ -342,7 +343,7 @@ const StudentsTable = ({
             <th colSpan={5} className="px-4 py-2 text-center remove-col">
               {exam?.course?.course_name && (
                 <>
-                  {exam.course.course_name} --- {exam.paper_name} (
+                  {selectedCourse} --- {exam.paper_name} (
                   <span className="text-red-600">{exam.status}</span>)
                 </>
               )}

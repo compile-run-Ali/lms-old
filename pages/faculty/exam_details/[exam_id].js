@@ -7,11 +7,10 @@ import { useRouter } from "next/router";
 
 export default function ExamPage() {
   const router = useRouter();
-  const { exam_id } = router.query;
+  const { exam_id,selectedCourse } = router.query;
   const [examDetails, setExamDetails] = useState(null);
   const [objectiveQuestions, setObjectiveQuestions] = useState(null);
   const [subjectiveQuestions, setSubjectiveQuestions] = useState(null);
-
   const fetchExam = async () => {
     const examDetails = await axios.post("/api/faculty/get_exam", {
       paper_id: exam_id,
@@ -76,6 +75,7 @@ export default function ExamPage() {
             objectiveQuestions={objectiveQuestions}
             subjectiveQuestions={subjectiveQuestions}
             isEdit={true}
+            selectedCourse={selectedCourse}
           />
         )}
       </DashboardLayout>
