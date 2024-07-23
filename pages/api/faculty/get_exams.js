@@ -70,6 +70,7 @@ const handler = async (req, res) => {
     });
 
     // Retrieve papers for the selected courses using the CoursePaper model
+    console.log(exams, "exams")
     if(!req.body.course_code){
       res.status(200).json(exams);
     }else{

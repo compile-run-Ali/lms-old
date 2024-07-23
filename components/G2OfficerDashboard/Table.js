@@ -3,11 +3,9 @@ import { MdPrint } from "react-icons/md";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 import { useRouter } from "next/router";
 
-const Table = ({ exams }) => {
+const Table = ({ exams,selectedCourse }) => {
   const router = useRouter();
-  console.log(
-    exams[0]
-  );
+  console.log(exams, "abcd");
   return (
     <table className="table-auto rounded-md font-poppins w-full text-left">
       <thead>
@@ -22,25 +20,26 @@ const Table = ({ exams }) => {
         </tr>
       </thead>
       <tbody>
-        {exams
+        {exams?.paper
+          .filter((exam) => exam.status === "Result Locked") // Filter exams with status "Result Locker"
           .sort(
             (a, b) => -new Date(a.date).getTime() + new Date(b.date).getTime()
           )
           .map((exam, index) => (
             <tr key={index} className="bg-white ">
-              <td className=" px-4 py-3 border">{index+1}</td>
-              <td className=" px-4 py-3 border">{exam.course_code}</td>
+              <td className=" px-4 py-3 border">{index + 1}</td>
+              <td className=" px-4 py-3 border">{exams.course_code}</td>
               <td className=" px-4 py-3 border">{exam.paper_name}</td>
-              <td className=" px-4 py-3 border">{exam.course.course_name}</td>
+              <td className=" px-4 py-3 border">{exams.course_name}</td>
               <td className=" px-4 py-3 border">{exam.paper_type}</td>
               <td className=" px-4 py-3 border">
                 {convertDateTimeToStrings(exam.date, true)}
               </td>
-             
+
               <td className="px-4 text-center">
                 <button
                   onClick={() => {
-                    router.push(`/faculty/print_results/${exam.paper_id}`);
+                    router.push(`/faculty/print_results/${exam.paper_id}?selectedCourse=${selectedCourse}`);
                   }}
                   className="hover:bg-blue-900 bg-blue-800 text-white p-2 rounded-md transition-colors "
                 >
